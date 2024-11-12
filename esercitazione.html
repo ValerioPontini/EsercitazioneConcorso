@@ -5,45 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz App</title>
     <style>
+        /* Impostazioni generali */
         body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            color: black;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             flex-direction: column;
+            text-align: center;
         }
-        .button {
-            font-size: 16px;
-            width: 300px;
-            height: 60px;
-            background-color: black;
-            color: white;
-            border: solid 2px black;
-            margin: 15px;
-            cursor: pointer;
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #4A90E2;
         }
-        .button:disabled {
-            background-color: gray;
-            cursor: not-allowed;
-        }
+
+        /* Stile per la domanda */
         #question {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             margin-bottom: 30px;
+            color: #444;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
             text-align: left;
-            max-width: 750px;
+        }
+
+        /* Stile per i bottoni */
+        .button {
+            font-size: 18px;
+            width: 80%;
+            max-width: 350px;
+            height: 50px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button:hover {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+
+        .button:disabled {
+            background-color: #D3D3D3;
+            cursor: not-allowed;
+        }
+
+        /* Animazioni per il loading */
+        .loading {
+            font-size: 20px;
+            color: #4A90E2;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div id="question"></div>
-    <button id="answerA" class="button" onclick="checkAnswer('A')"></button>
-    <button id="answerB" class="button" onclick="checkAnswer('B')"></button>
-    <button id="answerC" class="button" onclick="checkAnswer('C')"></button>
+    <h1>Benvenuto al Quiz!</h1>
+    <div id="question" class="loading">Caricamento domanda...</div>
+    <button id="answerA" class="button" onclick="checkAnswer('A')" disabled></button>
+    <button id="answerB" class="button" onclick="checkAnswer('B')" disabled></button>
+    <button id="answerC" class="button" onclick="checkAnswer('C')" disabled></button>
 
     <script>
         let questions = [];  // Questa variabile conterrà il JSON caricato
@@ -62,6 +97,7 @@
 
         let currentQuestion = {};
 
+        // Funzione per mostrare la domanda e le risposte
         function showQuestion(question) {
             const questionText = document.getElementById("question");
             const answerA = document.getElementById("answerA");
@@ -83,6 +119,7 @@
             answerC.disabled = false;
         }
 
+        // Funzione per verificare la risposta selezionata
         function checkAnswer(selected) {
             const question = currentQuestion;
             const answerA = document.getElementById("answerA");
@@ -111,6 +148,7 @@
             loadNewQuestion();
         }
 
+        // Funzione per caricare una nuova domanda
         function loadNewQuestion() {
             const randomIndex = Math.floor(Math.random() * questions.length);
             currentQuestion = questions[randomIndex];
@@ -119,4 +157,3 @@
     </script>
 </body>
 </html>
-
