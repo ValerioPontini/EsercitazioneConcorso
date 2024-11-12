@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .button {
+            font-size: 16px;
+            width: 300px;
+            height: 60px;
+            background-color: black;
+            color: white;
+            border: solid 2px black;
+            margin: 15px;
+            cursor: pointer;
+        }
+        .button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+        #question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: left;
+            max-width: 750px;
+        }
+    </style>
+</head>
+<body>
+    <div id="question"></div>
+    <button id="answerA" class="button" onclick="checkAnswer('A')"></button>
+    <button id="answerB" class="button" onclick="checkAnswer('B')"></button>
+    <button id="answerC" class="button" onclick="checkAnswer('C')"></button>
+
+    <script>
+        let questions = [];  // Questa variabile conterrà il JSON caricato
+
+        // Funzione per caricare il file JSON
+        fetch('domande_risposte_lista.json')
+            .then(response => response.json())  // Analizza il JSON dalla risposta
+            .then(data => {
+                questions = data;  // Assegna i dati JSON alla variabile 'questions'
+                loadNewQuestion();  // Inizia il quiz dopo che il JSON è caricato
+            })
+            .catch(error => {
+                console.error('Errore nel caricamento del JSON:', error);
+                alert('Impossibile caricare il file delle domande!');
+            });
+
+        let currentQuestion = {};
+
+        function showQuestion(question) {
+            const questionText = document.getElementById("question");
+            const answerA = document.getElementById("answerA");
+            const answerB = document.getElementById("answerB");
+            const answerC = document.getElementById("answerC");
+
+            questionText.textContent = question.domanda;
+
+            const answers = [question.corretta, question.B, question.C];
+            answers.sort(() => Math.random() - 0.5);  // Mischia le risposte
+
+            answerA.textContent = `A: ${answers[0]}`;
+            answerB.textContent = `B: ${answers[1]}`;
+            answerC.textContent = `C: ${answers[2]}`;
+
+            // Rende i bottoni attivi
+            answerA.disabled = false;
+            answerB.disabled = false;
+            answerC.disabled = false;
+        }
+
+        function checkAnswer(selected) {
+            const question = currentQuestion;
+            const answerA = document.getElementById("answerA");
+            const answerB = document.getElementById("answerB");
+            const answerC = document.getElementById("answerC");
+
+            // Disabilita i bottoni dopo la risposta
+            answerA.disabled = true;
+            answerB.disabled = true;
+            answerC.disabled = true;
+
+            let correctAnswer = question.corretta;
+            let selectedAnswer;
+
+            if (selected === 'A') selectedAnswer = answerA.textContent.split(": ")[1];
+            if (selected === 'B') selectedAnswer = answerB.textContent.split(": ")[1];
+            if (selected === 'C') selectedAnswer = answerC.textContent.split(": ")[1];
+
+            if (selectedAnswer === correctAnswer) {
+                alert("Corretto!");
+            } else {
+                alert(`Sbagliato! La risposta corretta era: ${correctAnswer}`);
+            }
+
+            // Carica una nuova domanda
+            loadNewQuestion();
+        }
+
+        function loadNewQuestion() {
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            currentQuestion = questions[randomIndex];
+            showQuestion(currentQuestion);
+        }
+    </script>
+</body>
+</html>
+
